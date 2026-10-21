@@ -1,4 +1,4 @@
-﻿# Hoja de ruta: predicción del puntaje global Saber 11
+# Hoja de ruta: predicción del puntaje global Saber 11
 
 ## 1. Objetivo y alcance
 
@@ -11,7 +11,7 @@
 3. Aplicación web interactiva que recibe las características de un estudiante y devuelve el puntaje estimado.
 4. Repositorio documentado y reproducible.
 
-**Restricción metodológica:** el puntaje global se calcula a partir de los puntajes por materia, por lo que estos se excluyen como variables de entrada para evitar fuga de datos. El modelo utiliza únicamente variables de contexto (estrato, educación de los padres, tipo de colegio, departamento, acceso a internet, entre otras). La lista definitiva se establece al documentar las variables del dataset.
+**Restricción metodológica:** el puntaje global se calcula a partir de los puntajes por materia, por lo que estos se excluyen como variables de entrada para evitar fuga de datos. El modelo utiliza únicamente variables de contexto (estrato, educación de los padres, tipo de colegio, departamento, acceso a internet, entre otras). La clasificación de cada variable está en `docs/diccionario_variables.md`.
 
 ## 2. Datos
 
@@ -45,6 +45,8 @@ proyecto_saber11/
 │   └── processed/
 ├── docs/
 │   ├── ROADMAP.md
+│   ├── comandos.md
+│   └── diccionario_variables.md
 ├── notebooks/
 │   ├── 01_exploracion.ipynb
 │   ├── 02_limpieza.ipynb
@@ -61,6 +63,7 @@ proyecto_saber11/
 ├── app/
 │   └── app.py
 ├── requirements.txt
+├── requirements-dev.txt
 ├── .gitignore
 └── README.md
 ```
@@ -69,10 +72,10 @@ proyecto_saber11/
 
 | Fase | Descripción | Entregable | Estado |
 |---|---|---|---|
-| 0. Configuración | Estructura del repositorio y control de versiones | Repositorio inicial en GitHub | Pendiente |
-| 1. Adquisición de datos | Muestra estratificada por periodo y documentación de variables | Dataset en `data/raw/` y diccionario de variables | En curso (descarga completada; falta el diccionario de variables) |
-| 2. Análisis exploratorio | Distribución del puntaje global y su relación con estrato, región y tipo de colegio | Notebook 01 con hallazgos | Pendiente |
-| 3. Limpieza y preparación | Eliminación de duplicados y de periodos sin puntaje global, tratamiento de nulos, unificación de categorías y exclusión de variables con fuga | Dataset en `data/processed/` | Pendiente |
+| 0. Configuración | Estructura del repositorio y control de versiones | Repositorio inicial en GitHub | Completada |
+| 1. Adquisición de datos | Muestra estratificada por periodo y documentación de variables | Dataset en `data/raw/` y diccionario de variables | Completada |
+| 2. Análisis exploratorio | Distribución del puntaje global y su relación con estrato, región y tipo de colegio | Notebook 01 con hallazgos | En curso |
+| 3. Limpieza y preparación | Eliminación de duplicados y de periodos sin puntaje global, filtro de registros con estado distinto de `PUBLICAR` y de puntajes en 0, tratamiento de nulos, unificación de categorías y exclusión de variables con fuga | Dataset en `data/processed/` | Pendiente |
 | 4. Modelo de referencia | Partición train/test; modelo que predice la media y regresión lineal como líneas base | Métricas de referencia | Pendiente |
 | 5. Comparación y ajuste | Ridge, Random Forest y HistGradientBoosting con validación cruzada y búsqueda de hiperparámetros | Tabla comparativa de modelos | Pendiente |
 | 6. Interpretación | Importancia de variables y análisis de errores | Notebook 04 y conclusiones | Pendiente |
@@ -104,7 +107,7 @@ Duración estimada: entre 5 y 7 semanas (estimación inicial, sujeta a ajuste).
 | Registros duplicados en la fuente (concentrados en 2018-1, 2019-4 y 2022-4) | Eliminar duplicados exactos en la Fase 3, antes de dividir en entrenamiento y prueba, para que un mismo estudiante no aparezca en ambos conjuntos |
 | Variable objetivo ausente en los periodos anteriores a 2014-2 | Excluir esos periodos del modelado |
 | Nombres o categorías de columnas distintos entre años | Homologación documentada en `limpieza.py` |
-| Proporción alta de valores nulos en variables clave | Evaluar imputación frente a exclusión y registrar la decisión |
+| Proporción alta de valores nulos en variables clave | Evaluar imputación frente a exclusión y documentar el criterio en el notebook |
 | Tiempos de entrenamiento elevados | Trabajar con muestra y priorizar HistGradientBoosting |
 
 ## 9. Convenciones del proyecto
