@@ -1,0 +1,12 @@
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+models/experimentos/*
+!models/experimentos/.gitkeep
+requirements-completo.txt
+__pycache__/
+.ipynb_checkpoints/
+*.pyc
+.env
+notas_privadas/
