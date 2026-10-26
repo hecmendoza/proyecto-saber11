@@ -20,7 +20,7 @@
 | Fuente | Resultados únicos Saber 11, datos.gov.co (ID `kgxf-xxbe`), publicado por ICFES |
 | Cobertura | Descarga de 2010-1 a 2022-4 (23 periodos). El modelado usa 2014-2 a 2022-4 (14 periodos), los únicos con puntaje global |
 | Estrategia de muestreo | Hasta 15.000 filas por periodo en la descarga, para garantizar representación de todos los años |
-| Tamaño de la muestra | 338.674 filas descargadas; 203.674 con puntaje global; 187.501 tras eliminar duplicados |
+| Tamaño de la muestra | 338.674 filas descargadas; 203.674 con puntaje global; 145.647 tras la limpieza |
 | Ubicación | `data/raw/` (sin modificar) y `data/processed/` (datos limpios) |
 
 ## 3. Tecnologías
@@ -49,7 +49,6 @@ proyecto_saber11/
 │   └── diccionario_variables.md
 ├── notebooks/
 │   ├── 01_exploracion.ipynb
-│   ├── 02_limpieza.ipynb
 │   ├── 03_modelos.ipynb
 │   └── 04_interpretacion.ipynb
 ├── src/
@@ -74,9 +73,9 @@ proyecto_saber11/
 |---|---|---|---|
 | 0. Configuración | Estructura del repositorio y control de versiones | Repositorio inicial en GitHub | Completada |
 | 1. Adquisición de datos | Muestra estratificada por periodo y documentación de variables | Dataset en `data/raw/` y diccionario de variables | Completada |
-| 2. Análisis exploratorio | Distribución del puntaje global y su relación con estrato, región y tipo de colegio | Notebook 01 con hallazgos | En curso |
-| 3. Limpieza y preparación | Eliminación de duplicados y de periodos sin puntaje global, filtro de registros con estado distinto de `PUBLICAR` y de puntajes en 0, tratamiento de nulos, unificación de categorías y exclusión de variables con fuga | Dataset en `data/processed/` | Pendiente |
-| 4. Modelo de referencia | Partición train/test; modelo que predice la media y regresión lineal como líneas base | Métricas de referencia | Pendiente |
+| 2. Análisis exploratorio | Distribución del puntaje global y su relación con estrato, región y tipo de colegio | Notebook 01 con hallazgos | Completada |
+| 3. Limpieza y preparación | Eliminación de duplicados y de periodos sin puntaje global, filtro de registros con estado distinto de `PUBLICAR` y de puntajes en 0, eliminación de registros con datos vacíos, unificación de categorías, cálculo de la edad y exclusión de variables con fuga | Dataset en `data/processed/` | Completada |
+| 4. Modelo de referencia | Partición train/test; modelo que predice la media y regresión lineal como líneas base | Métricas de referencia | En curso |
 | 5. Comparación y ajuste | Ridge, Random Forest y HistGradientBoosting con validación cruzada y búsqueda de hiperparámetros | Tabla comparativa de modelos | Pendiente |
 | 6. Interpretación | Importancia de variables y análisis de errores | Notebook 04 y conclusiones | Pendiente |
 | 7. Aplicación web | Persistencia del modelo e interfaz en Streamlit | Aplicación funcional | Pendiente |
@@ -103,11 +102,12 @@ Duración estimada: entre 5 y 7 semanas (estimación inicial, sujeta a ajuste).
 | Riesgo | Mitigación |
 |---|---|
 | Fuga de datos por variables derivadas del puntaje global (puntajes por materia, percentiles, niveles de desempeño) | Clasificar cada columna como "disponible antes del examen" o "resultado del examen" en la Fase 3 y conservar solo las primeras |
-| Muestra sesgada hacia ciertos periodos | Muestreo con cantidad fija por periodo; tras eliminar duplicados el tamaño por periodo deja de ser uniforme y debe revisarse |
+| Muestra sesgada hacia ciertos periodos | Muestreo con cantidad fija por periodo. Tras la limpieza se conserva aproximadamente entre el 69 % y el 89 % de cada periodo, menos en los recientes; se tendrá en cuenta en la validación temporal |
+| Periodos con más de 15.000 registros en la fuente, representados por una muestra que podría no ser aleatoria | Comparar la distribución por departamento de un periodo grande con la de la fuente (pendiente de verificar) |
 | Registros duplicados en la fuente (concentrados en 2018-1, 2019-4 y 2022-4) | Eliminar duplicados exactos en la Fase 3, antes de dividir en entrenamiento y prueba, para que un mismo estudiante no aparezca en ambos conjuntos |
 | Variable objetivo ausente en los periodos anteriores a 2014-2 | Excluir esos periodos del modelado |
 | Nombres o categorías de columnas distintos entre años | Homologación documentada en `limpieza.py` |
-| Proporción alta de valores nulos en variables clave | Evaluar imputación frente a exclusión y documentar el criterio en el notebook |
+| Proporción alta de valores nulos en variables clave | Se eliminaron los registros con datos vacíos (19,6 % de la base de trabajo). Los excluidos puntúan en promedio menos (262,1 frente a 283,1), por lo que el modelo puede quedar sesgado hacia puntajes altos. Se evaluará una segunda versión que conserve los vacíos como categoría y se compararán los resultados |
 | Tiempos de entrenamiento elevados | Trabajar con muestra y priorizar HistGradientBoosting |
 
 ## 9. Convenciones del proyecto
